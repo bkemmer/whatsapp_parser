@@ -3,9 +3,6 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
-CONFIG_FILENAME = None
-REPLACE_DICT_FILENAME = None
-
 # Basic YAML reading
 def read_yaml_file(file_path: str):
     """
@@ -27,27 +24,32 @@ def read_yaml_file(file_path: str):
     except yaml.YAMLError as e:
         raise yaml.YAMLError(f"Error parsing YAML file {file_path}: {e}")
 
-
-def get_logger(logs_folder:str='logs'):
+def get_logger(logger_name:str, logs_folder:str='logs', log_level:int=logging.ERROR, file:bool=True, console:bool=False) -> logging.Logger:
     # Create a logger
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.ERROR)  # Only log ERROR and above
+    logger = logging.getLogger(logger_name)
+    logger.setLevel(log_level)
 
-    # Create a file handler for error logs
-    logs_folder_path = Path(logs_folder)
-    logs_folder_path.mkdir(parents=True, exist_ok=True)
     now_str = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    error_filename = logs_folder_path / f'error_{now_str}.log'
-
-    error_handler = logging.FileHandler(error_filename)
-    error_handler.setLevel(logging.ERROR)
-
-    # Optional: set a format for the log messages
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    error_handler.setFormatter(formatter)
 
-    # Add the handler to the logger
-    logger.addHandler(error_handler)
+    if file:
+        # Create a file handler for error logs
+        logs_folder_path = Path(logs_folder)
+        logs_folder_path.mkdir(parents=True, exist_ok=True)
+        if log_level == logging.ERROR:
+            fname = logs_folder_path / f'{logger_name}_error_{now_str}.log'
+        else:
+            fname = logs_folder_path / f'{logger_name}_{now_str}.log'
+        file_handler = logging.FileHandler(fname)
+        file_handler.setLevel(log_level)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+
+    if console:
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(log_level)
+        console_handler.setFormatter(formatter)
+        logger.addHandler(console_handler)
 
     return logger
 

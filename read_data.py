@@ -2,8 +2,10 @@ import polars as pl
 from datetime import datetime
 from utils import read_yaml_file, get_logger
 from pathlib import Path
+import logging
 
-logger = get_logger()
+error_logger = get_logger(logger_name='read_data_error', log_level=logging.ERROR)
+logger =  get_logger(logger_name='read_data_info', log_level=logging.INFO, console=True)
 
 def read_data_from_file(data_path: str):
     with open(data_path, 'r', encoding='utf-8', errors='backslashreplace') as file:
@@ -25,8 +27,7 @@ def get_name_and_msg(name_and_msg: str):
         return name, msg
 
 
-def read_data(project_name:str, data_path:str, config_fname_yaml:str) -> pl.DataFrame:
-    configs_dict = read_yaml_file(config_fname_yaml)
+def read_data(project_name:str, data_path:str, configs_dict:dict) -> pl.DataFrame:
 
     outputs_folder = Path(configs_dict['paths']['input_data_folder'])
     project_outputs_folder = outputs_folder / project_name
@@ -45,7 +46,7 @@ def read_data(project_name:str, data_path:str, config_fname_yaml:str) -> pl.Data
             names.append(name)
             msgs.append(msg.strip())
         except ValueError as e:
-            logger.error(f"Error processing line: {line.strip()} - {e}")
+            error_logger.error(f"Error processing line: {line.strip()} - {e}")
 
     df = pl.DataFrame(
             {
@@ -54,8 +55,9 @@ def read_data(project_name:str, data_path:str, config_fname_yaml:str) -> pl.Data
                 "msg": msgs,
             }
         )
-    print(df.head())
-    print(f"shape: {df.shape}")
+
+    logger.info(f"Dataframe shape: {df.shape}")
+    logger.info(df.head())
     df.write_parquet(full_parsed_file)
 
     print(f"File saved on: {full_parsed_file}")
