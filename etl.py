@@ -36,6 +36,8 @@ def transform(df:pl.DataFrame, map_path:str|None, configs_dict: dict) -> None:
     output_pivot_file = output_folder_path / configs_dict['paths']['output_pivot_file']
     output_daily_acc_path = output_folder_path / configs_dict['paths']['output_daily_acc_path']
 
+    truncate_names_chars = int(configs_dict['configs']['truncate_names_chars'])
+
     skip_words = configs_dict['skip_words']
 
     pattern = '|'.join(skip_words)
@@ -47,7 +49,7 @@ def transform(df:pl.DataFrame, map_path:str|None, configs_dict: dict) -> None:
                 pl.col('name').replace(replace_dict).alias('name'),
             ])
             .with_columns(
-                pl.col('name').str.slice(0,17).alias('name')
+                pl.col('name').str.slice(0,truncate_names_chars).alias('name')
             )
             .filter(
                 ~pl.col("name").str.contains(pattern)
