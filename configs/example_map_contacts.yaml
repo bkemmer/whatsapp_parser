@@ -1,0 +1,4 @@
+# Phone number to name mapping
+replace_dict:
+  "+55 11 99999-9999": "Any name HERE"
+  "+65 19 888888-9999": "Another name HERE"

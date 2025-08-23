@@ -1,0 +1,27 @@
+# File paths configuration
+paths:
+
+  input_data_folder: 'data'
+  data_raw_input_path: '<extracted_whatsapp_data_filename>.txt'
+  data_path: '<SOME_NAME_HERE>.parquet'
+
+  map_contacts_filename: '<MAP OF NUMBERS TO CONTACT NAMES in config folder>.yaml'
+
+  output_folder: 'output/<SUBFOLDER>'
+  output_file_all_time: 'msgs_all.xlsx'
+  output_file_six_months: 'msgs_6_months.xlsx'
+  output_file_last_week: 'msgs_last_week.xlsx'
+  output_pivot_file: 'df_pivot.parquet'
+  output_daily_acc_path: 'acc_per_day.xlsx'
+
+  videos_folder: 'videos'
+  video_filename: '<FILENAME>.mp4'
+
+# Words to skip during processing 'actions performed by whatsapp'
+skip_words:
+  - "added"
+  - "created"
+  - "turned off"
+  - "removed"
+  - "code"
+  - "updated"
