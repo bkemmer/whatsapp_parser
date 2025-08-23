@@ -1,18 +1,11 @@
 import polars as pl
 from datetime import datetime
-from utils import read_yaml_file, get_logger, CONFIG_FILENAME
+from utils import read_yaml_file, get_logger
 from pathlib import Path
 
 logger = get_logger()
-configs_dict = read_yaml_file(CONFIG_FILENAME)
 
-input_data_folder = configs_dict['paths']['input_data_folder']
-input_data_folder = Path(input_data_folder)
-
-data_raw_input_path = input_data_folder / configs_dict['paths']['data_raw_input_path']
-data_path = input_data_folder / configs_dict['paths']['data_path']
-
-def read_data(data_path: str):
+def read_data_from_file(data_path: str):
     with open(data_path, 'r', encoding='utf-8', errors='backslashreplace') as file:
         file.readline()  # Skip the first line
         lines = file.readlines()
@@ -31,29 +24,40 @@ def get_name_and_msg(name_and_msg: str):
         msg = ''.join(text[1:])
         return name, msg
 
-lines = read_data(data_raw_input_path)
 
-dt_objs, names, msgs = [], [], []
-for line in lines:
-    try:
-        dt_obj, name_and_msg = get_date_and_msgs(line)
-        name, msg = get_name_and_msg(name_and_msg)
-        dt_objs.append(dt_obj)
-        names.append(name)
-        msgs.append(msg.strip())
-    except ValueError as e:
-        logger.error(f"Error processing line: {line.strip()} - {e}")
+def read_data(project_name:str, data_path:str, config_fname_yaml:str) -> pl.DataFrame:
+    configs_dict = read_yaml_file(config_fname_yaml)
 
-df = pl.DataFrame(
-        {
-            "dt": dt_objs,
-            "name": names,
-            "msg": msgs,
-        }
-    )
-print(df.head())
-print(f"shape: {df.shape}")
-df.write_parquet(data_path)
+    outputs_folder = Path(configs_dict['paths']['input_data_folder'])
+    project_outputs_folder = outputs_folder / project_name
+    project_outputs_folder.mkdir(parents=True, exist_ok=True)
 
-print(f"File saved on: {data_path}")
+    full_parsed_file = project_outputs_folder / configs_dict['paths']['full_parsed_file']
 
+    lines = read_data_from_file(data_path)
+
+    dt_objs, names, msgs = [], [], []
+    for line in lines:
+        try:
+            dt_obj, name_and_msg = get_date_and_msgs(line)
+            name, msg = get_name_and_msg(name_and_msg)
+            dt_objs.append(dt_obj)
+            names.append(name)
+            msgs.append(msg.strip())
+        except ValueError as e:
+            logger.error(f"Error processing line: {line.strip()} - {e}")
+
+    df = pl.DataFrame(
+            {
+                "dt": dt_objs,
+                "name": names,
+                "msg": msgs,
+            }
+        )
+    print(df.head())
+    print(f"shape: {df.shape}")
+    df.write_parquet(full_parsed_file)
+
+    print(f"File saved on: {full_parsed_file}")
+
+    return df
