@@ -7,6 +7,7 @@ requires-python = ">=3.11.11"
 dependencies = [
     "bar-chart-race>=0.1.0",
     "chardet>=5.2.0",
+    "click>=8.2.1",
     "ipykernel>=6.30.1",
     "jupyterlab>=4.4.5",
     "matplotlib>=3.10.5",
