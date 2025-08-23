@@ -1,0 +1,21 @@
+[project]
+name = "futebas"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11.11"
+dependencies = [
+    "bar-chart-race>=0.1.0",
+    "chardet>=5.2.0",
+    "ipykernel>=6.30.1",
+    "jupyterlab>=4.4.5",
+    "matplotlib>=3.10.5",
+    "polars>=1.32.2",
+    "pyarrow>=21.0.0",
+    "pyyaml>=6.0.2",
+    "seaborn>=0.13.2",
+    "xlsxwriter>=3.2.5",
+]
+
+[tool.uv.sources]
+bar-chart-race = { git = "https://github.com/dexplo/bar_chart_race.git" }
