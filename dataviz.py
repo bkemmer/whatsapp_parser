@@ -1,6 +1,7 @@
 import polars as pl
 import bar_chart_race as bcr
 from utils import get_logger
+from etl import get_pivoted_df
 from pathlib import Path
 import logging
 
@@ -35,26 +36,23 @@ def run_bcr(df:pl.DataFrame, video_filename_path:str) -> None:
             # write_html_kwargs=None,
             filter_column_colors=True)
 
-def get_params(configs_dict: dict) -> tuple[pl.DataFrame, Path]:
+def get_videos_folder_path(project_name:str, configs_dict: dict) -> Path:
 
-    logger =  get_logger(logger_name='dataviz_info', log_level=logging.INFO, console=True)
-
-    output_folder = Path(configs_dict['paths']['output_folder'])
-    output_folder.mkdir(parents=True, exist_ok=True)
-
-    output_pivot_path = output_folder / configs_dict['paths']['output_pivot_file']
+    outputs_folder = Path(configs_dict['paths']['outputs_folder'])
+    outputs_folder.mkdir(parents=True, exist_ok=True)
 
     videos_folder = configs_dict['paths']['videos_folder']
-    videos_folder_path = Path(videos_folder)
+    videos_folder_path = Path(videos_folder) / project_name
     videos_folder_path.mkdir(parents=True, exist_ok=True)
 
-    logger.info(f'Trying to read file: {output_pivot_path}')
-    df_pivot = pl.read_parquet(output_pivot_path)
+    return videos_folder_path
+
+def generate_bar_chart_race(df:pl.DataFrame, configs_dict: dict, project_name:str, verbose:bool) -> None:
+
+    logger =  get_logger(logger_name='dataviz_info', log_level=logging.INFO, console=True)
+    df_pivot = get_pivoted_df(df)
     df_pandas = df_pivot.to_pandas().set_index('dt_date')
-
-    return df_pandas, videos_folder_path
-
-def generate_bar_chart_race(configs_dict: dict, project_name:str) -> None:
-    df, video_filename_path = get_params(configs_dict)
+    video_filename_path = get_videos_folder_path(project_name, configs_dict)
     video_filename_path_str = str(video_filename_path / f'{project_name}_bcr.mp4')
-    run_bcr(df.head(100), video_filename_path_str)
+    # FIXME: remove limit
+    run_bcr(df_pandas.head(100), video_filename_path_str)

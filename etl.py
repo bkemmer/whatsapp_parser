@@ -2,7 +2,8 @@ import polars as pl
 from datetime import datetime, timedelta
 from pathlib import Path
 import logging
-from utils import read_yaml_file, get_logger
+from utils import get_logger
+from dateutil.relativedelta import relativedelta
 
 
 def group_df(df: pl.DataFrame) -> pl.DataFrame:
@@ -17,47 +18,7 @@ def group_df(df: pl.DataFrame) -> pl.DataFrame:
         )
     )
 
-def transform(df:pl.DataFrame, map_path:str|None, configs_dict: dict) -> None:
-
-    logger =  get_logger(logger_name='etl_info', log_level=logging.INFO, console=True)
-
-    if map_path is not None:
-        replace_dict = read_yaml_file(map_path)['replace_dict']
-    else:
-        replace_dict = {}
-
-    output_folder = configs_dict['paths']['output_folder']
-    output_folder_path = Path(output_folder)
-    output_folder_path.mkdir(parents=True, exist_ok=True)
-
-    output_file_all_time = output_folder_path / configs_dict['paths']['output_file_all_time']
-    output_file_six_months = output_folder_path / configs_dict['paths']['output_file_six_months']
-    output_file_last_week = output_folder_path / configs_dict['paths']['output_file_last_week']
-    output_pivot_file = output_folder_path / configs_dict['paths']['output_pivot_file']
-    output_daily_acc_path = output_folder_path / configs_dict['paths']['output_daily_acc_path']
-
-    truncate_names_chars = int(configs_dict['configs']['truncate_names_chars'])
-
-    skip_words = configs_dict['skip_words']
-
-    pattern = '|'.join(skip_words)
-    df = (
-            df
-            .with_columns([
-                pl.col('dt').dt.year().alias('dt_year'),
-                pl.col('dt').dt.date().alias('dt_date'),
-                pl.col('name').replace(replace_dict).alias('name'),
-            ])
-            .with_columns(
-                pl.col('name').str.slice(0,truncate_names_chars).alias('name')
-            )
-            .filter(
-                ~pl.col("name").str.contains(pattern)
-            )
-    )
-    logger.info(f"Unique names: {df['name'].unique()}")
-
-
+def get_pivoted_df(df:pl.DataFrame):
     df_grp_by_date = (
             df
             .group_by(['dt_date', 'name'])
@@ -67,7 +28,6 @@ def transform(df:pl.DataFrame, map_path:str|None, configs_dict: dict) -> None:
                 pl.col('len').cum_sum().over('name').alias('msgs_acc')
                 )
             )
-    df_grp_by_date.write_excel(output_daily_acc_path)
     df_pivot = (
             df_grp_by_date
             .pivot(
@@ -78,35 +38,65 @@ def transform(df:pl.DataFrame, map_path:str|None, configs_dict: dict) -> None:
             .fill_null(strategy="backward")
             .fill_null(strategy="forward")
             )
+    return df_pivot
 
-    logger.info(df_pivot)
-    df_pivot.write_parquet(output_pivot_file)
+def relativedelta_to_string(rd:timedelta) -> str:
+    rd_dict = {
+        'years': rd.years,
+        'months': rd.months,
+        'days': rd.days,
+    }
+    print(rd_dict)
 
-    cutoff_date = datetime.now() - timedelta(days=182)
-    df_six_months = (
+def transform(df:pl.DataFrame, project_name:str, replace_dict:dict|None, configs_dict: dict, start_date:datetime|None, period: timedelta|None, verbose:bool) -> None:
+
+    logger =  get_logger(logger_name='etl_info', log_level=logging.INFO, console=True)
+
+    filename = project_name
+
+    outputs_folder = configs_dict['paths']['outputs_folder']
+    outputs_folder_path = Path(outputs_folder)
+    outputs_folder_path.mkdir(parents=True, exist_ok=True)
+
+    truncate_names_chars = int(configs_dict['configs']['truncate_names_chars'])
+
+    skip_words = configs_dict['skip_words']
+    pattern = '|'.join(skip_words)
+
+    exprs = [pl.col('dt').dt.date().alias('dt_date')]
+    if replace_dict:
+        exprs = exprs + [pl.col('name').replace(replace_dict).alias('name')]
+
+    df = (
             df
-            .filter(pl.col('dt') > cutoff_date)
-            .drop('dt_year')
+            .with_columns(exprs)
+            .with_columns(
+                pl.col('name').str.slice(0, truncate_names_chars).alias('name')
+            )
+            .filter(
+                ~pl.col("name").str.contains(pattern)
+            )
     )
+    if verbose:
+        logger.info(f"Unique names: {df['name'].unique()}")
 
-    df_last_week = (
-        df
-        .filter(pl.col('dt') > datetime.now() - timedelta(days=7))
-    )
+    if period:
+        cutoff_date = datetime.now() - period
+        df = df.filter(pl.col('dt') > cutoff_date)
+        # FIXME:
+        print("type of period")
+        print(type(period))
+        relativedelta_to_string(period)
+        filename = f"{filename}_{period}"
 
-    df_grp_six_months = group_df(df_six_months)
+    if start_date:
+        df = df.filter(pl.col('dt') > start_date)
+        filename = f"{filename}_{start_date.strftime('%Y%m%d')}"
 
-    df_grp_six_months.write_excel(output_file_six_months)
+    if verbose:
+        logger.info(df.head())
 
-    logger.info(df_grp_six_months)
+    df.write_parquet(outputs_folder_path / f'{filename}.parquet')
+    df.write_excel(outputs_folder_path / f'{filename}.xlsx')
 
-
-    df_grp_last_week = group_df(df_last_week)
-
-    df_grp_last_week.write_excel(output_file_last_week)
-
-    logger.info(df_grp_last_week)
-
-    df_grp_all_time = group_df(df)
-    df_grp_all_time.write_excel(output_file_all_time)
-    logger.info(df_grp_all_time)
+    return df

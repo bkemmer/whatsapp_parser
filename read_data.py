@@ -27,13 +27,11 @@ def get_name_and_msg(name_and_msg: str):
         return name, msg
 
 
-def read_data(project_name:str, data_path:str, configs_dict:dict) -> pl.DataFrame:
+def read_data(project_name:str, data_path:str, configs_dict:dict, verbose:bool) -> pl.DataFrame:
 
-    outputs_folder = Path(configs_dict['paths']['input_data_folder'])
+    outputs_folder = Path(configs_dict['paths']['outputs_folder'])
     project_outputs_folder = outputs_folder / project_name
     project_outputs_folder.mkdir(parents=True, exist_ok=True)
-
-    full_parsed_file = project_outputs_folder / configs_dict['paths']['full_parsed_file']
 
     lines = read_data_from_file(data_path)
 
@@ -55,11 +53,14 @@ def read_data(project_name:str, data_path:str, configs_dict:dict) -> pl.DataFram
                 "msg": msgs,
             }
         )
+    if verbose:
+        logger.info(f"Dataframe shape: {df.shape}")
+        logger.info(df.head())
 
-    logger.info(f"Dataframe shape: {df.shape}")
-    logger.info(df.head())
-    df.write_parquet(full_parsed_file)
+    filename = f"{project_name}"
+    df.write_parquet(project_outputs_folder / f'{filename}_raw.parquet')
+    df.write_excel(project_outputs_folder / f'{filename}_raw.excel')
 
-    print(f"File saved on: {full_parsed_file}")
+    print(f"Files saved on: {project_outputs_folder}")
 
     return df
