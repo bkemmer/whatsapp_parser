@@ -1,4 +1,4 @@
-# WhatsApp Message Analyzer
+# WhatsApp Message Analyzer (Alpha)
 
 A Python tool for analyzing and visualizing WhatsApp chat exports, featuring interactive data processing and animated bar chart race generation.
 
@@ -105,6 +105,8 @@ The tool generates:
 1. **Processed Data**: Cleaned and transformed message data
 2. **Statistics**: Message counts, activity patterns, participant analysis
 3. **Bar Chart Race Video**: Animated visualization showing message activity over time (optional)
+
+![BCR example](imgs/bcr_example.gif)
 
 ## WhatsApp Export Format
 

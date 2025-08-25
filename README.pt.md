@@ -1,4 +1,4 @@
-# Analisador de Mensagens WhatsApp
+# Analisador de Mensagens WhatsApp (Alpha)
 
 Uma ferramenta Python para analisar e visualizar exportações de conversas do WhatsApp, com processamento de dados interativo e geração de gráficos de barras animados.
 
@@ -103,6 +103,8 @@ A ferramenta gera:
 1. **Dados Processados**: Dados de mensagens limpos e transformados
 2. **Estatísticas**: Contagem de mensagens, padrões de atividade, análise de participantes
 3. **Vídeo de Corrida de Gráfico de Barras**: Visualização animada mostrando atividade de mensagens ao longo do tempo (opcional)
+
+![BCR example](imgs/bcr_example.gif)
 
 ## Formato de Exportação do WhatsApp
 
