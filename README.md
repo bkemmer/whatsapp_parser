@@ -112,7 +112,7 @@ The tool generates:
 
 To export your WhatsApp chat:
 
-1. *In your phone:* Open the chat in WhatsApp
+1. **In your phone:** Open the chat in WhatsApp
 2. Tap the contact/group name at the top
 3. Scroll down and tap "Export Chat"
 4. Choose "Without Media" for faster processing
