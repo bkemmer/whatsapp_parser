@@ -23,7 +23,7 @@ def run_bcr(df: pl.DataFrame, video_filename_path: str, bcr_configs_dict: dict) 
         period_summary_func=lambda v, r: {
             "x": 0.6,
             "y": 0.2,
-            "s": f"{bcr_configs_dict['period_summary_text']}: {v.sum()}",
+            "s": f"{bcr_configs_dict['period_summary_text']}: {int(v.sum()):,}",
             "size": 11,
         },
         # perpendicular_bar_func='median',
