@@ -2,6 +2,8 @@
 
 Uma ferramenta Python para analisar e visualizar exportações de conversas do WhatsApp, com processamento de dados interativo e geração de gráficos de barras animados.
 
+TLDR: Gere um Excel com a porcentagem de mensagens por usuário e um gráfico de barras contínuo (exemplo abaixo).
+
 ## Instalação
 
 ### Pré-requisitos
