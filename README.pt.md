@@ -131,7 +131,7 @@ Para exportar sua conversa do WhatsApp:
 
 ### Problemas Comuns
 
-**Não é possível exportar histórico de conversa: ** se o grupo do WhatsApp tiver habilitado a opção 'Privacidade avançada de chat'. Você não conseguirá exportar o histórico de conversas.
+**Não é possível exportar histórico de conversa**: se o grupo do WhatsApp tiver habilitado a opção 'Privacidade avançada de chat'. Você não conseguirá exportar o histórico de conversas.
 
 **"Faltando a chave: 'replace_dict'"**: Seu arquivo de mapeamento deve conter uma chave `replace_dict` no nível superior.
 
