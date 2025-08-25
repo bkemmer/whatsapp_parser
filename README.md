@@ -133,7 +133,8 @@ To export your WhatsApp chat:
 
 ### Common Issues
 
-** Unable to export chat history: ** if the whatsapp group has enable 'Advanced chat privacy' option. You won't be able to export the chat history.
+**Unable to export chat history**: if the whatsapp group has enable 'Advanced chat privacy' option. You won't be able to export the chat history.
+
 **"Missing the key: 'replace_dict'"**: Your mapping file should contain a top-level `replace_dict` key.
 
 
