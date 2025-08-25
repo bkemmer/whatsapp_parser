@@ -7,21 +7,20 @@ from dateutil.relativedelta import relativedelta
 
 
 def group_df(df: pl.DataFrame) -> pl.DataFrame:
-    """ Group the DataFrame by 'name', count messages, calculate percentage, and sort by message count """
+    """Group the DataFrame by 'name', count messages, calculate percentage, and sort by message count"""
     return (
         df.group_by("name")
         .len()
         .sort("len", descending=True)
         .rename({"len": "msgs_len"})
         .with_columns(
-            (pl.col("msgs_len") / pl.col("msgs_len").sum())
-            .alias("percentage")
+            (pl.col("msgs_len") / pl.col("msgs_len").sum()).alias("percentage")
         )
     )
 
 
 def get_pivoted_df(df: pl.DataFrame):
-    """ Create a pivoted DataFrame with cumulative message counts per user over time """
+    """Create a pivoted DataFrame with cumulative message counts per user over time"""
     df_grp_by_date = (
         df.group_by(["dt_date", "name"])
         .len()
@@ -41,7 +40,7 @@ def get_pivoted_df(df: pl.DataFrame):
 
 
 def relativedelta_to_string(rd: relativedelta) -> str:
-    """ Convert a relativedelta object to a string representation like 'period_1y' """
+    """Convert a relativedelta object to a string representation like 'period_1y'"""
     text = "period"
     if rd.years > 0:
         text += f"_{rd.years}y"
@@ -53,7 +52,7 @@ def relativedelta_to_string(rd: relativedelta) -> str:
 
 
 def anonymize_df(df: pl.DataFrame) -> pl.DataFrame:
-    """ Anonymize the 'name' column in the DataFrame by replacing each unique name with a generic identifier (ex.: user1) """
+    """Anonymize the 'name' column in the DataFrame by replacing each unique name with a generic identifier (ex.: user1)"""
     unique_names_list = list(df["name"].unique())
     anon_dict = {
         k: f"user{v}"

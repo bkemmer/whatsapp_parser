@@ -6,7 +6,7 @@ from pathlib import Path
 import logging
 
 
-def run_bcr(df: pl.DataFrame, video_filename_path: str, bcr_configs_dict:dict) -> None:
+def run_bcr(df: pl.DataFrame, video_filename_path: str, bcr_configs_dict: dict) -> None:
     bcr.bar_chart_race(
         df=df,
         filename=video_filename_path,
@@ -41,7 +41,8 @@ def run_bcr(df: pl.DataFrame, video_filename_path: str, bcr_configs_dict:dict) -
         filter_column_colors=True,
     )
 
-def get_bcr_params(project_name: str, configs_dict:dict) -> dict:
+
+def get_bcr_params(project_name: str, configs_dict: dict) -> dict:
     title = configs_dict["bcr_configs"].get("title", f"Bar Chart {project_name}")
     return {
         "n_bars": configs_dict["bcr_configs"]["n_bars"],
@@ -49,6 +50,7 @@ def get_bcr_params(project_name: str, configs_dict:dict) -> dict:
         "period_length": configs_dict["bcr_configs"]["period_length"],
         "title": title,
     }
+
 
 def get_videos_folder_path(project_name: str, configs_dict: dict) -> Path:
     outputs_folder = Path(configs_dict["paths"]["outputs_folder"])
