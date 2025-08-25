@@ -7,20 +7,21 @@ from dateutil.relativedelta import relativedelta
 
 
 def group_df(df: pl.DataFrame) -> pl.DataFrame:
+    """ Group the DataFrame by 'name', count messages, calculate percentage, and sort by message count """
     return (
         df.group_by("name")
         .len()
         .sort("len", descending=True)
-        .rename({"len": "qtde_msgs"})
+        .rename({"len": "msgs_len"})
         .with_columns(
-            (pl.col("qtde_msgs") / pl.col("qtde_msgs").sum() * 100)
-            .round(1)
-            .alias("perc")
+            (pl.col("msgs_len") / pl.col("msgs_len").sum())
+            .alias("percentage")
         )
     )
 
 
 def get_pivoted_df(df: pl.DataFrame):
+    """ Create a pivoted DataFrame with cumulative message counts per user over time """
     df_grp_by_date = (
         df.group_by(["dt_date", "name"])
         .len()
@@ -40,6 +41,7 @@ def get_pivoted_df(df: pl.DataFrame):
 
 
 def relativedelta_to_string(rd: relativedelta) -> str:
+    """ Convert a relativedelta object to a string representation like 'period_1y' """
     text = "period"
     if rd.years > 0:
         text += f"_{rd.years}y"
@@ -51,14 +53,13 @@ def relativedelta_to_string(rd: relativedelta) -> str:
 
 
 def anonymize_df(df: pl.DataFrame) -> pl.DataFrame:
+    """ Anonymize the 'name' column in the DataFrame by replacing each unique name with a generic identifier (ex.: user1) """
     unique_names_list = list(df["name"].unique())
     anon_dict = {
         k: f"user{v}"
         for k, v in zip(unique_names_list, range(1, len(unique_names_list) + 1))
     }
-    df = df.with_columns(pl.col("name").replace(anon_dict).alias("name"))
-    print(df["name"].unique())
-    return df
+    return df.with_columns(pl.col("name").replace(anon_dict).alias("name"))
 
 
 def transform(
@@ -79,7 +80,7 @@ def transform(
     outputs_folder_path = Path(outputs_folder) / project_name
     outputs_folder_path.mkdir(parents=True, exist_ok=True)
 
-    truncate_names_chars = int(configs_dict["configs"]["truncate_names_chars"])
+    truncate_names_chars = int(configs_dict["etl_configs"]["truncate_names_chars"])
 
     skip_words = configs_dict["skip_words"]
     pattern = "|".join(skip_words)
@@ -100,7 +101,8 @@ def transform(
         df = anonymize_df(df)
 
     if period:
-        cutoff_date = datetime.now() - period
+        max_date_in_data = df.select(pl.col("dt").max()).to_series()[0]
+        cutoff_date = max_date_in_data - period
         df = df.filter(pl.col("dt") > cutoff_date)
         filename = f"{filename}_{relativedelta_to_string(period)}"
 
@@ -111,7 +113,12 @@ def transform(
     if verbose:
         logger.info(df.head())
 
-    df.write_parquet(outputs_folder_path / f"{filename}.parquet")
-    df.write_excel(outputs_folder_path / f"{filename}.xlsx")
+    df.write_parquet(outputs_folder_path / f"{filename}_transformed.parquet")
+    df.write_excel(outputs_folder_path / f"{filename}_transformed.xlsx")
+
+    df_grp = group_df(df)
+
+    df_grp.write_parquet(outputs_folder_path / f"{filename}_grouped.parquet")
+    df_grp.write_excel(outputs_folder_path / f"{filename}_grouped.xlsx")
 
     return df
