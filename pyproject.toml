@@ -1,15 +1,13 @@
 [project]
-name = "futebas"
+name = "whatsapp_parser"
 version = "0.1.0"
-description = "Add your description here"
+description = "Codes to parse whatsapp export chats and to some analytics on it."
 readme = "README.md"
-requires-python = ">=3.11.11"
+requires-python = ">=3.10"
 dependencies = [
     "bar-chart-race>=0.1.0",
     "chardet>=5.2.0",
     "click>=8.2.1",
-    "ipykernel>=6.30.1",
-    "jupyterlab>=4.4.5",
     "matplotlib>=3.10.5",
     "polars>=1.32.2",
     "pyarrow>=21.0.0",
