@@ -21,9 +21,9 @@ def run_bcr(df: pl.DataFrame, video_filename_path: str, bcr_configs_dict: dict) 
         # period_label={'x': .99, 'y': .8, 'font': {'size': 25, 'color': 'blue'}},
         period_template="%B %d, %Y",
         period_summary_func=lambda v, r: {
-            "x": 0.85,
+            "x": 0.6,
             "y": 0.2,
-            "s": f"Total de mensages: {v.sum()}",
+            "s": f"{bcr_configs_dict['period_summary_text']}: {v.sum()}",
             "size": 11,
         },
         # perpendicular_bar_func='median',
@@ -43,12 +43,14 @@ def run_bcr(df: pl.DataFrame, video_filename_path: str, bcr_configs_dict: dict) 
 
 
 def get_bcr_params(project_name: str, configs_dict: dict) -> dict:
-    title = configs_dict["bcr_configs"].get("title", f"Bar Chart {project_name}")
+    title = configs_dict["bcr_configs"]["title"]
+    title = title if len(title > 0 ) else f"Bar Chart {project_name}"
     return {
         "n_bars": configs_dict["bcr_configs"]["n_bars"],
         "steps_per_period": configs_dict["bcr_configs"]["steps_per_period"],
         "period_length": configs_dict["bcr_configs"]["period_length"],
         "title": title,
+        "period_summary_text": configs_dict["bcr_configs"]["period_summary_text"],
     }
 
 

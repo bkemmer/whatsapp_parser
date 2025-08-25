@@ -40,7 +40,7 @@ python main.py [OPTIONS]
 | `--config` | `-c` | Path to YAML configuration file | `-c "config.yaml"` |
 | `--map` | `-m` | Path to name mapping YAML file | `-m "names.yaml"` |
 | `--start-date` | `-sd` | Start date for analysis (YYYY-MM-DD) | `-sd 2023-01-01` |
-| `--period` | `-p` | Time period filter | `-p 6m`, `-p 1y`, `-p 30d` |
+| `--period` | `-p` | Time period filter | `-p 6m`, `-p 1y`, `-p 30d` but just one|
 | `--video` | `-v` | Generate bar chart race video | `-v` |
 | `--anon` | | Anonymize names in output | `--anon` |
 | `--verbose` | | Enable verbose logging | `--verbose` |
@@ -57,7 +57,7 @@ python main.py -n "my_chat" -d "WhatsApp Chat.txt"
 
 ### Default Configuration File
 
-The tool expects a default configuration file at `configs/default_config.yaml`. This file should contain settings for:
+The tool can receive custom configuration file or will use default at `configs/default_config.yaml`. This file should contain settings for:
 
 - Chart styling and colors
 - Output formats and paths
@@ -131,7 +131,7 @@ To export your WhatsApp chat:
 
 ### Common Issues
 
-** Unable to export chat history: if the whatsapp group has enable 'Advanced chat privacy' option. You won't be able to export the chat history.
+** Unable to export chat history: ** if the whatsapp group has enable 'Advanced chat privacy' option. You won't be able to export the chat history.
 **"Missing the key: 'replace_dict'"**: Your mapping file should contain a top-level `replace_dict` key.
 
 

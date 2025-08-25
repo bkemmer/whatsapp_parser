@@ -38,7 +38,7 @@ python main.py [OPÇÕES]
 | `--config` | `-c` | Caminho para o arquivo de configuração YAML | `-c "config.yaml"` |
 | `--map` | `-m` | Caminho para o arquivo YAML de mapeamento de nomes | `-m "nomes.yaml"` |
 | `--start-date` | `-sd` | Data de início para análise (YYYY-MM-DD) | `-sd 2023-01-01` |
-| `--period` | `-p` | Filtro de período de tempo | `-p 6m`, `-p 1y`, `-p 30d` |
+| `--period` | `-p` | Filtro de período de tempo | `-p 6m`, `-p 1y`, `-p 30d` somente um por vez |
 | `--video` | `-v` | Gerar vídeo de corrida de gráfico de barras | `-v` |
 | `--anon` | | Anonimizar nomes na saída | `--anon` |
 | `--verbose` | | Habilitar logging detalhado | `--verbose` |
@@ -55,7 +55,7 @@ python main.py -n "meu_chat" -d "Chat do WhatsApp.txt"
 
 ### Arquivo de Configuração Padrão
 
-A ferramenta espera um arquivo de configuração padrão em `configs/default_config.yaml`. Este arquivo deve conter configurações para:
+A ferramenta espera um arquivo de configuração pode ser customizado ou será o padrão em `configs/default_config.yaml`. Este arquivo deve conter configurações para:
 
 - Estilo e cores dos gráficos
 - Formatos e caminhos de saída
@@ -129,7 +129,7 @@ Para exportar sua conversa do WhatsApp:
 
 ### Problemas Comuns
 
-**Não é possível exportar histórico de conversa**: se o grupo do WhatsApp tiver habilitado a opção 'Privacidade avançada de chat'. Você não conseguirá exportar o histórico de conversas.
+**Não é possível exportar histórico de conversa: ** se o grupo do WhatsApp tiver habilitado a opção 'Privacidade avançada de chat'. Você não conseguirá exportar o histórico de conversas.
 
 **"Faltando a chave: 'replace_dict'"**: Seu arquivo de mapeamento deve conter uma chave `replace_dict` no nível superior.
 

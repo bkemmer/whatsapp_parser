@@ -12,7 +12,8 @@ bcr_configs:
   n_bars: 10
   steps_per_period: 10
   period_length: 100
-  title: null
+  title: ''
+  period_summary_text: 'Total messages: '
 
 
 # Words to skip during processing 'actions performed by whatsapp'
