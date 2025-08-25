@@ -110,7 +110,7 @@ A ferramenta gera:
 
 Para exportar sua conversa do WhatsApp:
 
-1. *No seu celular:* Abra a conversa no WhatsApp
+1. **No seu celular:** Abra a conversa no WhatsApp
 2. Toque no nome do contato/grupo no topo
 3. Role para baixo e toque em "Exportar conversa"
 4. Escolha "Sem mídia" para processamento mais rápido
