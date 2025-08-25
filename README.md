@@ -2,6 +2,8 @@
 
 A Python tool for analyzing and visualizing WhatsApp chat exports, featuring interactive data processing and animated bar chart race generation.
 
+TLDR: Generate an excel with the percentage of messages per user, and a Bar chart race plot (example bellow).
+
 **Read this in Portuguese | Leia em português:** [Português](README.pt.md)
 
 ## Installation
