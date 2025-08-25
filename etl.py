@@ -40,22 +40,31 @@ def get_pivoted_df(df:pl.DataFrame):
             )
     return df_pivot
 
-def relativedelta_to_string(rd:timedelta) -> str:
-    rd_dict = {
-        'years': rd.years,
-        'months': rd.months,
-        'days': rd.days,
-    }
-    print(rd_dict)
+def relativedelta_to_string(rd:relativedelta) -> str:
+    text = 'period'
+    if rd.years > 0:
+        text += f"_{rd.years}y"
+    if rd.months > 0:
+        text += f"_{rd.months}m"
+    if rd.days > 0:
+        text += f"_{rd.days}d"
+    return text
 
-def transform(df:pl.DataFrame, project_name:str, replace_dict:dict|None, configs_dict: dict, start_date:datetime|None, period: timedelta|None, verbose:bool) -> None:
+
+def anonymize_df(df:pl.DataFrame) -> pl.DataFrame:
+    unique_names_list = list(df['name'].unique())
+    anon_dict = {k:f"user{v}" for k,v in zip(unique_names_list, range(1, len(unique_names_list)+1))}
+    print(anon_dict)
+    return df
+
+def transform(df:pl.DataFrame, project_name:str, replace_dict:dict|None, configs_dict: dict, start_date:datetime|None, period: relativedelta|None, anon:bool, verbose:bool) -> None:
 
     logger =  get_logger(logger_name='etl_info', log_level=logging.INFO, console=True)
 
     filename = project_name
 
     outputs_folder = configs_dict['paths']['outputs_folder']
-    outputs_folder_path = Path(outputs_folder)
+    outputs_folder_path = Path(outputs_folder) / project_name
     outputs_folder_path.mkdir(parents=True, exist_ok=True)
 
     truncate_names_chars = int(configs_dict['configs']['truncate_names_chars'])
@@ -80,14 +89,13 @@ def transform(df:pl.DataFrame, project_name:str, replace_dict:dict|None, configs
     if verbose:
         logger.info(f"Unique names: {df['name'].unique()}")
 
+    if anon:
+        df = anonymize_df(df)
+
     if period:
         cutoff_date = datetime.now() - period
         df = df.filter(pl.col('dt') > cutoff_date)
-        # FIXME:
-        print("type of period")
-        print(type(period))
-        relativedelta_to_string(period)
-        filename = f"{filename}_{period}"
+        filename = f"{filename}_{relativedelta_to_string(period)}"
 
     if start_date:
         df = df.filter(pl.col('dt') > start_date)

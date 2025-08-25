@@ -114,7 +114,7 @@ def check_video_option(video:bool):
     if video:
         click.echo("Video of bar chart race will be generated.")
     else:
-        video = click.confirm('Do you want to generate bar chart race video?', default=False)
+        video = click.confirm('Do you want to generate bar chart race video?', default=True)
     return video
 
 @click.command()
@@ -159,9 +159,15 @@ def check_video_option(video:bool):
     required=False,
     help="Generate the video of bar chart race",
 )
+@click.option(
+    '--anon',
+    is_flag=True,
+    required=False,
+    help="Anonymize the names in the data",
+)
 @click.option('--verbose', is_flag=True)
 @click.help_option('-h', '--help')
-def main(name: str|None, data: str|None, config: str|None, map: str|None, start_date: datetime|None, period: timedelta|None, video:bool, verbose: bool) -> None:
+def main(name: str|None, data: str|None, config: str|None, map: str|None, start_date: datetime|None, period: timedelta|None, video:bool, anon:bool, verbose: bool) -> None:
     """
     Whatsapp parser
 
@@ -180,10 +186,11 @@ def main(name: str|None, data: str|None, config: str|None, map: str|None, start_
     df = read_data(project_name, data_path, configs_dict, verbose)
 
     logger.info('Transforming data...')
-    df_transformed = transform(df, project_name, replace_dict, configs_dict, start_date, period, verbose)
+    df_transformed = transform(df, project_name, replace_dict, configs_dict, start_date, period, anon, verbose)
 
-    logger.info('Generating bar chart race video...')
-    generate_bar_chart_race(df_transformed, configs_dict, project_name, verbose)
+    if video:
+        logger.info('Generating bar chart race video...')
+        generate_bar_chart_race(df_transformed, configs_dict, project_name, verbose)
 
 if __name__ == '__main__':
     main()

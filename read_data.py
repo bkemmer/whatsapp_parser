@@ -59,7 +59,7 @@ def read_data(project_name:str, data_path:str, configs_dict:dict, verbose:bool) 
 
     filename = f"{project_name}"
     df.write_parquet(project_outputs_folder / f'{filename}_raw.parquet')
-    df.write_excel(project_outputs_folder / f'{filename}_raw.excel')
+    df.write_excel(project_outputs_folder / f'{filename}_raw.xlsx')
 
     print(f"Files saved on: {project_outputs_folder}")
 
