@@ -1,35 +1,39 @@
 import polars as pl
 from datetime import datetime
-from utils import read_yaml_file, get_logger
+from utils import get_logger
 from pathlib import Path
 import logging
 
-error_logger = get_logger(logger_name='read_data_error', log_level=logging.ERROR)
-logger =  get_logger(logger_name='read_data_info', log_level=logging.INFO, console=True)
+error_logger = get_logger(logger_name="read_data_error", log_level=logging.ERROR)
+logger = get_logger(logger_name="read_data_info", log_level=logging.INFO, console=True)
+
 
 def read_data_from_file(data_path: str):
-    with open(data_path, 'r', encoding='utf-8', errors='backslashreplace') as file:
+    with open(data_path, "r", encoding="utf-8", errors="backslashreplace") as file:
         file.readline()  # Skip the first line
         lines = file.readlines()
         return lines
 
+
 def get_date_and_msgs(line: str):
-        text1 = line.split(' - ')
-        dt_str = text1[0]
-        name_and_msg = ' '.join(text1[1:])
-        dt_obj = datetime.strptime(dt_str, "%m/%d/%y, %H:%M")
-        return dt_obj, name_and_msg
+    text1 = line.split(" - ")
+    dt_str = text1[0]
+    name_and_msg = " ".join(text1[1:])
+    dt_obj = datetime.strptime(dt_str, "%m/%d/%y, %H:%M")
+    return dt_obj, name_and_msg
+
 
 def get_name_and_msg(name_and_msg: str):
-        text = name_and_msg.split(': ')
-        name = text[0]
-        msg = ''.join(text[1:])
-        return name, msg
+    text = name_and_msg.split(": ")
+    name = text[0]
+    msg = "".join(text[1:])
+    return name, msg
 
 
-def read_data(project_name:str, data_path:str, configs_dict:dict, verbose:bool) -> pl.DataFrame:
-
-    outputs_folder = Path(configs_dict['paths']['outputs_folder'])
+def read_data(
+    project_name: str, data_path: str, configs_dict: dict, verbose: bool
+) -> pl.DataFrame:
+    outputs_folder = Path(configs_dict["paths"]["outputs_folder"])
     project_outputs_folder = outputs_folder / project_name
     project_outputs_folder.mkdir(parents=True, exist_ok=True)
 
@@ -47,19 +51,19 @@ def read_data(project_name:str, data_path:str, configs_dict:dict, verbose:bool) 
             error_logger.error(f"Error processing line: {line.strip()} - {e}")
 
     df = pl.DataFrame(
-            {
-                "dt": dt_objs,
-                "name": names,
-                "msg": msgs,
-            }
-        )
+        {
+            "dt": dt_objs,
+            "name": names,
+            "msg": msgs,
+        }
+    )
     if verbose:
         logger.info(f"Dataframe shape: {df.shape}")
         logger.info(df.head())
 
     filename = f"{project_name}"
-    df.write_parquet(project_outputs_folder / f'{filename}_raw.parquet')
-    df.write_excel(project_outputs_folder / f'{filename}_raw.xlsx')
+    df.write_parquet(project_outputs_folder / f"{filename}_raw.parquet")
+    df.write_excel(project_outputs_folder / f"{filename}_raw.xlsx")
 
     print(f"Files saved on: {project_outputs_folder}")
 
