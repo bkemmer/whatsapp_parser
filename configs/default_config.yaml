@@ -1,0 +1,34 @@
+# File paths configuration
+paths:
+  # Folders
+  input_data_folder: 'data'
+  outputs_folder: 'output'
+  videos_folder: 'videos'
+
+etl_configs:
+  truncate_names_chars: 20 # truncate names to improve the bar chart race
+
+bcr_configs:
+  n_bars: 10
+  steps_per_period: 10
+  period_length: 100
+  title: null
+
+
+# Words to skip during processing 'actions performed by whatsapp'
+skip_words:
+  - "added"
+  - "created"
+  - "turned off"
+  - "removed"
+  - "code"
+  - "updated"
+  - "changed the group description"
+  - "changed this group's icon"
+  - "changed the group name from"
+  - "pinned a message"
+  - "Only messages that mention or people share"
+  - "changed to"
+  - "left"
+  - "now an admin"
+  - "no longer an admin"
