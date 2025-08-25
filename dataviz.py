@@ -44,7 +44,7 @@ def run_bcr(df: pl.DataFrame, video_filename_path: str, bcr_configs_dict: dict) 
 
 def get_bcr_params(project_name: str, configs_dict: dict) -> dict:
     title = configs_dict["bcr_configs"]["title"]
-    title = title if len(title > 0 ) else f"Bar Chart {project_name}"
+    title = title if len(title) > 0 else f"Bar Chart {project_name}"
     return {
         "n_bars": configs_dict["bcr_configs"]["n_bars"],
         "steps_per_period": configs_dict["bcr_configs"]["steps_per_period"],
