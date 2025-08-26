@@ -37,17 +37,17 @@ def get_logger(
     logger = logging.getLogger(logger_name)
     logger.setLevel(log_level)
 
-    now_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    now_str = datetime.now().strftime("%Y%m%d")
     formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 
     if file:
         # Create a file handler for error logs
-        logs_folder_path = Path(logs_folder)
+        logs_folder_path = Path(logs_folder) / now_str
         logs_folder_path.mkdir(parents=True, exist_ok=True)
         if log_level == logging.ERROR:
-            fname = logs_folder_path / f"{logger_name}_error_{now_str}.log"
+            fname = logs_folder_path / f"{logger_name}_error.log"
         else:
-            fname = logs_folder_path / f"{logger_name}_{now_str}.log"
+            fname = logs_folder_path / f"{logger_name}.log"
         file_handler = logging.FileHandler(fname)
         file_handler.setLevel(log_level)
         file_handler.setFormatter(formatter)
