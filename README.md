@@ -117,7 +117,7 @@ The tool generates:
 
 1. **Processed Data**: Cleaned and transformed message data
 2. **Statistics**: Message counts, activity patterns, participant analysis
-3. **Bar Chart Race Video**: Animated visualization showing message activity over time (optional)
+3. **Bar Chart Race Video**: Animated visualization showing message activity over time (optional) (video is better than the gif bellow):
 
 ![BCR example](imgs/bcr_example.gif)
 
