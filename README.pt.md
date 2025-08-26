@@ -116,7 +116,7 @@ A ferramenta gera:
 
 1. **Dados Processados**: Dados de mensagens limpos e transformados
 2. **Estatísticas**: Contagem de mensagens, padrões de atividade, análise de participantes
-3. **Vídeo de Corrida de Gráfico de Barras**: Visualização animada mostrando atividade de mensagens ao longo do tempo (opcional)
+3. **Vídeo de Corrida de Gráfico de Barras**: Visualização animada mostrando atividade de mensagens ao longo do tempo (opcional) (o vídeo fica melhor que o gif abaixo):
 
 ![BCR exemplo](imgs/bcr_example.gif)
 
