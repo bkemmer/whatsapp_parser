@@ -2,7 +2,9 @@
 
 Uma ferramenta Python para analisar e visualizar exportações de conversas do WhatsApp, com processamento de dados interativo e geração de gráficos de barras animados.
 
-TLDR: Gere um Excel com a porcentagem de mensagens por usuário e um gráfico de barras contínuo (exemplo abaixo).
+TLDR: Gere um Excel com a porcentagem de mensagens por usuário e um gráfico de corrida de barras (exemplo abaixo).
+
+**Leia em inglês | Read in English:** [English](README.md)
 
 ## Instalação
 
@@ -11,24 +13,34 @@ TLDR: Gere um Excel com a porcentagem de mensagens por usuário e um gráfico de
 - Python 3.10 ou superior
 - Dependências necessárias (instale via pip ou uv):
 
+## Usando pip (recomendado usar um virtualenv):
+
 ```bash
+git clone <ESTE REPOSITÓRIO>
 pip install -r requirements.txt
 ```
-
-## Uso
 
 ### Uso Básico
 
 Execute o analisador com prompts interativos:
 
 ```bash
-python main.py
+python main.py [OPÇÕES]
 ```
 
-### Opções de Linha de Comando
+## Usando uv (instale o uv [link](https://docs.astral.sh/uv/getting-started/installation/) )
 
 ```bash
-python main.py [OPÇÕES]
+git clone <ESTE REPOSITÓRIO>
+uv sync
+```
+
+### Uso Básico
+
+Execute o analisador com prompts interativos:
+
+```bash
+uv run main.py [OPÇÕES]
 ```
 
 #### Opções
@@ -40,7 +52,7 @@ python main.py [OPÇÕES]
 | `--config` | `-c` | Caminho para o arquivo de configuração YAML | `-c "config.yaml"` |
 | `--map` | `-m` | Caminho para o arquivo YAML de mapeamento de nomes | `-m "nomes.yaml"` |
 | `--start-date` | `-sd` | Data de início para análise (YYYY-MM-DD) | `-sd 2023-01-01` |
-| `--period` | `-p` | Filtro de período de tempo | `-p 6m`, `-p 1y`, `-p 30d` somente um por vez |
+| `--period` | `-p` | Filtro de período de tempo | `-p 6m`, `-p 1y`, `-p 30d` apenas um |
 | `--video` | `-v` | Gerar vídeo de corrida de gráfico de barras | `-v` |
 | `--anon` | | Anonimizar nomes na saída | `--anon` |
 | `--verbose` | | Habilitar logging detalhado | `--verbose` |
@@ -57,7 +69,7 @@ python main.py -n "meu_chat" -d "Chat do WhatsApp.txt"
 
 ### Arquivo de Configuração Padrão
 
-A ferramenta espera um arquivo de configuração pode ser customizado ou será o padrão em `configs/default_config.yaml`. Este arquivo deve conter configurações para:
+A ferramenta pode receber um arquivo de configuração personalizado ou usará o padrão em `configs/default_config.yaml`. Este arquivo deve conter configurações para:
 
 - Estilo e cores dos gráficos
 - Formatos e caminhos de saída
@@ -106,7 +118,7 @@ A ferramenta gera:
 2. **Estatísticas**: Contagem de mensagens, padrões de atividade, análise de participantes
 3. **Vídeo de Corrida de Gráfico de Barras**: Visualização animada mostrando atividade de mensagens ao longo do tempo (opcional)
 
-![BCR example](imgs/bcr_example.gif)
+![BCR exemplo](imgs/bcr_example.gif)
 
 ## Formato de Exportação do WhatsApp
 

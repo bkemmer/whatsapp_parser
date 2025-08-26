@@ -3,7 +3,7 @@ name = "whatsapp_parser"
 version = "0.1.0"
 description = "Codes to parse whatsapp export chats and to some analytics on it."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.10, <3.13"
 dependencies = [
     "bar-chart-race>=0.1.0",
     "chardet>=5.2.0",

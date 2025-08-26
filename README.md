@@ -13,24 +13,35 @@ TLDR: Generate an excel with the percentage of messages per user, and a Bar char
 - Python 3.10 or higher
 - Required dependencies (install via pip or uv):
 
+## Using pip (recommend to use a virtualenv):
+
 ```bash
+git clone <THIS REPOSITORY>
 pip install -r requirements.txt
 ```
-
-## Usage
 
 ### Basic Usage
 
 Run the analyzer with interactive prompts:
 
 ```bash
-python main.py
+python main.py [OPTIONS]
 ```
 
-### Command Line Options
+## Using uv (install uv [link](https://docs.astral.sh/uv/getting-started/installation/) )
+
 
 ```bash
-python main.py [OPTIONS]
+git clone <THIS REPOSITORY>
+uv sync
+```
+
+### Basic Usage
+
+Run the analyzer with interactive prompts:
+
+```bash
+uv run main.py [OPTIONS]
 ```
 
 #### Options
